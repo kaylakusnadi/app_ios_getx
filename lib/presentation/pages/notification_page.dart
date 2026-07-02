@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../controllers/notification_controller.dart';
 
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+  const NotificationPage({super.key});
 
   @override
   State<NotificationPage> createState() => _NotificationPageState();
@@ -67,7 +67,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20.0),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 16.0, offset: const Offset(0, 8)),
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 16.0, offset: const Offset(0, 8)),
                 ],
               ),
               child: Row(

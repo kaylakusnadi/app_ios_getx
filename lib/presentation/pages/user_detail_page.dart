@@ -3,35 +3,22 @@ import 'package:get/get.dart';
 import '../controllers/user_controller.dart';
 import '../controllers/notification_controller.dart';
 
-class UserDetailPage extends StatefulWidget {
-  final String username;
-  const UserDetailPage({Key? key, required this.username}) : super(key: key);
-
-  @override
-  State<UserDetailPage> createState() => _UserDetailPageState();
-}
-
-class _UserDetailPageState extends State<UserDetailPage> {
-  final userC = Get.find<UserController>();
-  final notifC = Get.find<NotificationController>();
-
-  @override
-  void initState() {
-    super.initState();
-    // Gunakan Future.microtask agar aman jika men-trigger state change di GetX saat build
-    Future.microtask(() => userC.fetchUserDetail(widget.username));
-  }
+// Updated: 2026-07-02 by Kayla
+// Change: Mengubah StatefulWidget menjadi StatelessWidget
+// Reason: Memaksimalkan reaktivitas GetX, pemanggilan API diurus oleh interaksi di page sebelumnya
+class UserDetailPage extends StatelessWidget {
+  const UserDetailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final userC = Get.find<UserController>();
+    final notifC = Get.find<NotificationController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Detail User"),
         actions: [
-// Updated: 2026-07-01 by Kayla
-// Change: Memantau perubahan nilai detailUser dan favoriteUsers secara reaktif
           Obx(() {
             if (userC.detailUser.value == null) return const SizedBox();
             
@@ -45,8 +32,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ? "Menghapus |${userC.detailUser.value!.login}| dari favorit" 
                     : "Berhasil menambahkan |${userC.detailUser.value!.login}| ke favorit";
                 
-// Updated: 2026-07-01 by Kayla
-// Change: Memanggil Get.snackbar tanpa bergantung pada BuildContext
                 Get.snackbar(
                   "Sukses", 
                   rawMessage.replaceAll('|', ''),
@@ -74,7 +59,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 Text("Gagal memuat detail: ${userC.detailError.value}"),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => userC.fetchUserDetail(widget.username),
+                  onPressed: () => userC.fetchUserDetail(userC.detailUser.value!.login),
                   child: const Text("Retry"),
                 )
               ],

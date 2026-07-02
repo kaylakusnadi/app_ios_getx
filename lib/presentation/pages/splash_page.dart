@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
-import 'dashboard_page.dart';
+import '../../routes/app_routes.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -14,11 +14,11 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-// Updated: 2026-07-01 by Kayla
-// Change: Navigasi menggunakan Get.offReplacement
-// Reason: Lebih bersih dibandingkan Navigator.pushReplacement
+// Updated: 2026-07-02 by Kayla
+// Change: Menggunakan Get.offNamed
+// Reason: Memperbaiki syntax error karena Get.offReplacementNamed tidak valid di GetX
     Timer(const Duration(seconds: 2), () {
-      Get.off(() => const DashboardPage());
+      Get.offNamed(AppRoutes.DASHBOARD);
     });
   }
 

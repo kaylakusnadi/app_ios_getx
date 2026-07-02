@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import '../controllers/user_controller.dart';
 import '../controllers/theme_controller.dart';
 import '../controllers/notification_controller.dart';
-import 'notification_page.dart';
+import '../../routes/app_routes.dart';
 import '../widgets/user_card_widget.dart';
 import 'favorite_page.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -18,6 +18,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final ScrollController _scrollController = ScrollController();
 // Updated: 2026-07-01 by Kayla
 // Change: Mengakses Controllers via Get.find()
+// Reason: Standarisasi dependency injection GetX di layer UI
   final userC = Get.find<UserController>();
   final themeC = Get.find<ThemeController>();
   final notifC = Get.find<NotificationController>();
@@ -50,6 +51,7 @@ class _DashboardPageState extends State<DashboardPage> {
           actions: [
 // Updated: 2026-07-01 by Kayla
 // Change: Mengganti BlocBuilder dengan Obx untuk reaktivitas tema
+// Reason: Menggunakan reaktivitas GetX agar perubahan tema instan tanpa merender ulang seluruh komponen
             Obx(() => IconButton(
               icon: Icon(themeC.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded),
               onPressed: () => themeC.toggleTheme(),
@@ -57,9 +59,12 @@ class _DashboardPageState extends State<DashboardPage> {
             Obx(() => Stack(
               alignment: Alignment.center,
               children: [
+// Updated: 2026-07-02 by Kayla
+// Change: Navigasi menggunakan Named Route (AppRoutes)
+// Reason: Mematuhi AC RND-150 untuk standarisasi GetX Routing
                 IconButton(
                   icon: const Icon(Icons.notifications_none_rounded),
-                  onPressed: () => Get.to(() => const NotificationPage()),
+                  onPressed: () => Get.toNamed(AppRoutes.NOTIFICATION),
                 ),
                 if (notifC.unreadCount.value > 0)
                   Positioned(
@@ -112,6 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
 // Updated: 2026-07-01 by Kayla
 // Change: Mengganti BlocBuilder dengan Obx untuk performa yang lebih cepat di tab Popular
+// Reason: Obx hanya merebuild widget yang state-nya berubah secara spesifik
                   Obx(() {
                     final listToShow = userC.searchResult.value ?? userC.users;
                     

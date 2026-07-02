@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../data/models/user_model.dart';
-import '../pages/user_detail_page.dart';
+import '../../routes/app_routes.dart';
+import '../controllers/user_controller.dart';
 
 class UserCardWidget extends StatelessWidget {
   final UserModel user;
@@ -19,10 +20,11 @@ class UserCardWidget extends StatelessWidget {
     
     return GestureDetector(
       onTap: () {
-// Updated: 2026-07-01 by Kayla
-// Change: Mengganti Navigator bawaan dengan Get.to()
-// Reason: Standarisasi perpindahan halaman menggunakan GetX Route Management
-        Get.to(() => UserDetailPage(username: user.login));
+// Updated: 2026-07-02 by Kayla
+// Change: Panggil fetch data detail sebelum routing, dan gunakan Get.toNamed
+// Reason: Agar halaman detail tetap stateless dan navigasi terpusat
+        Get.find<UserController>().fetchUserDetail(user.login);
+        Get.toNamed(AppRoutes.DETAIL);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),

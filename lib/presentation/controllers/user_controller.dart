@@ -1,26 +1,25 @@
 import 'package:get/get.dart';
-import '../../data/services/api_service.dart';
+import '../../data/repositories/user_repository.dart';
 import '../../data/models/user_model.dart';
 import '../../data/models/user_detail_model.dart';
 
-// Updated: 2026-07-01 by Kayla
-// Change: Penyatuan logika BLoC (Event, State, Bloc) ke dalam GetxController tunggal
-// Reason: Standarisasi arsitektur GetX yang lebih ringan, pragmatis, dan mudah di-maintenance
+// Updated: 2026-07-02 by Kayla
+// Change: Modifikasi UserController untuk menggunakan UserRepository
+// Reason: Mematuhi pemisahan layer antara controller dan data source (repository pattern)
 class UserController extends GetxController {
-  final ApiService apiService;
-  UserController({required this.apiService});
+  final UserRepository repository;
+  
+  UserController({required this.repository});
 
-  // State Variables (Reactive)
   var users = <UserModel>[].obs;
   var favoriteUsers = <UserModel>[].obs;
-  var searchResult = Rxn<List<UserModel>>(); // Rxn untuk nullable
+  var searchResult = Rxn<List<UserModel>>();
   var searchQuery = "".obs;
   var isUsersLoading = false.obs;
   var isDetailLoading = false.obs;
   var usersError = RxnString();
   var detailError = RxnString();
   
-  // Non-reactive variables
   int currentPage = 1;
   bool hasReachedMax = false;
   var detailUser = Rxn<UserDetailModel>();
@@ -58,7 +57,8 @@ class UserController extends GetxController {
         isUsersLoading.value = true;
       }
 
-      final newUsers = await apiService.fetchUsers(currentPage);
+      // Menggunakan layer repository
+      final newUsers = await repository.getUsers(currentPage);
       
       if (newUsers.isEmpty) {
         isUsersLoading.value = false;
@@ -83,7 +83,8 @@ class UserController extends GetxController {
     isDetailLoading.value = true;
     detailError.value = null;
     try {
-      final detail = await apiService.fetchUserDetail(username);
+      // Menggunakan layer repository
+      final detail = await repository.getUserDetail(username);
       detailUser.value = detail;
     } catch (e) {
       detailError.value = e.toString();

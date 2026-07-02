@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'data/services/api_service.dart';
-import 'presentation/controllers/user_controller.dart';
-import 'presentation/controllers/notification_controller.dart';
-import 'presentation/controllers/theme_controller.dart';
-import 'presentation/pages/splash_page.dart';
+import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
+import 'bindings/initial_binding.dart';
 
+// Updated: 2026-07-02 by Kayla
+// Change: Menerapkan GetX Routing dan InitialBinding pada GetMaterialApp
+// Reason: Standarisasi penuh GetX sesuai AC RND-150
 void main() {
-// Updated: 2026-07-01 by Kayla
-// Change: Inisialisasi Dependency Injection GetX
-// Reason: Menggantikan RepositoryProvider dan MultiBlocProvider yang boros kode
-  Get.put(ThemeController());
-  Get.put(NotificationController());
-  Get.put(UserController(apiService: ApiService()));
-
   runApp(const MyApp());
 }
 
@@ -22,12 +16,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-// Updated: 2026-07-01 by Kayla
-// Change: Mengubah MaterialApp menjadi GetMaterialApp
-// Reason: Agar fungsi Get.to(), Get.snackbar(), dan Get.changeThemeMode() berfungsi
     return GetMaterialApp(
       title: 'GitHub Mini App',
-      themeMode: ThemeMode.light, // ThemeMode diatur oleh Get.changeThemeMode() nanti
+      initialBinding: InitialBinding(),
+      initialRoute: AppRoutes.SPLASH,
+      getPages: AppPages.pages,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -62,7 +56,6 @@ class MyApp extends StatelessWidget {
         ),
         cardColor: const Color(0xFF1E1E1E),
       ),
-      home: const SplashPage(),
       debugShowCheckedModeBanner: false,
     );
   }
