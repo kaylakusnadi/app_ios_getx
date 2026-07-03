@@ -64,7 +64,13 @@ class _DashboardPageState extends State<DashboardPage> {
 // Reason: Mematuhi AC RND-150 untuk standarisasi GetX Routing
                 IconButton(
                   icon: const Icon(Icons.notifications_none_rounded),
-                  onPressed: () => Get.toNamed(AppRoutes.NOTIFICATION),
+                  onPressed: () {
+// Updated: 2026-07-03 by Kayla
+// Change: Menambahkan perintah unfocus sebelum pindah halaman
+// Reason: Mencegah bug UI di mana keyboard otomatis muncul kembali saat user melakukan 'back' dari halaman riwayat notifikasi
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    Get.toNamed(AppRoutes.NOTIFICATION);
+                  },
                 ),
                 if (notifC.unreadCount.value > 0)
                   Positioned(
@@ -101,6 +107,12 @@ class _DashboardPageState extends State<DashboardPage> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 onChanged: (value) => userC.searchUsers(value),
+// Updated: 2026-07-03 by Kayla
+// Change: Menambahkan aksi onTapOutside pada TextField
+// Reason: Otomatis menutup keyboard ketika user melakukan klik/tap di luar area pencarian (seperti menekan tombol favorite di card)
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 decoration: InputDecoration(
                   hintText: "Cari user...",
                   prefixIcon: const Icon(Icons.search, color: Colors.blue),
@@ -151,6 +163,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: ListView.builder(
                         controller: _scrollController,
                         physics: const AlwaysScrollableScrollPhysics(),
+// Updated: 2026-07-03 by Kayla
+// Change: Menambahkan properti keyboardDismissBehavior pada ListView
+// Reason: Meningkatkan UX dengan menutup keyboard secara otomatis ketika pengguna mulai melakukan scroll pada daftar
+                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                         padding: const EdgeInsets.only(top: 12.0, bottom: 24.0),
                         itemCount: (userC.searchResult.value != null || userC.hasReachedMax) 
                             ? listToShow.length 
